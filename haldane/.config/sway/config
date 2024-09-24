@@ -4,6 +4,7 @@
 #
 # Read `man 5 sway` for a complete reference.
 
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -20,9 +21,11 @@ set $term alacritty
 # Font configuration: needs pango markup, but couldn't get it to work
 # instead, I'll just remove window title bars:
 default_border pixel 2
+client.focused "#fab387" "#fab387" "#ffffff" "#fab387"
 
 # add gaps
-gaps inner 5
+gaps inner 25
+gaps outer 25
 
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
@@ -31,14 +34,10 @@ set $menu rofi -show drun
 
 ### Output configuration
 
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg ~/Pictures/aot-sky.jpg fill
-
-# Example configuration:
-output eDP-1 resolution 2256x1504 position 0,0 scale 1
+# we set screen layout profiles with kanshi
 
 # cursor theme/size
-seat seat0 xcursor_theme default 36 
+seat seat0 xcursor_theme Adwaita 36
 
 # GTK theming
 set $gnome-schema org.gnome.desktop.interface
@@ -46,36 +45,53 @@ set $gnome-schema org.gnome.desktop.interface
 exec_always {
     gsettings set $gnome-schema gtk-theme 'Catppuccin-blue'
     gsettings set $gnome-schema icon-theme 'Catppuccin-blue-xhdpi'
+    gsettings set $gnome-schema cursor-theme 'Adwaita'
+    gsettings set $gnome-schema cursor-size 36
 }
 
-# You can get the names of your outputs by running: swaymsg -t get_outputs
-
 ### Idle configuration
-set $lock swaylock -C ~/.config/swaylock/config
+set $lock swaylock -f -C ~/.config/swaylock/config
 
 exec swayidle -w \
-         timeout 300 $lock \
-         timeout 600 'sudo systemctl suspend' \
-         before-sleep $lock \
+    timeout 30 $lock \
+    timeout 150 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+    before-sleep $lock
+
 
 ### Input configuration
+focus_follows_mouse always
 
   input type:touchpad {
-      dwt enabled
+      dwt disabled
       tap enabled
       natural_scroll enabled
       middle_emulation enabled
       click_method clickfinger
-      accel_profile adaptive
-      pointer_accel 0.4
+      accel_profile adaptive 
+      pointer_accel 0.4 
       scroll_method two_finger
       drag disabled
   }
 
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+  input 5426:92:Razer_Razer_DeathAdder_Elite {
+      scroll_factor 5
+  }
+
+  input 1133:50504:Logitech_USB_Receiver_Mouse {
+      scroll_factor 5
+  }
+
+### Gesture bindings
+
+bindgesture swipe:right workspace prev
+bindgesture swipe:left workspace next
 
 ### Key bindings
+
+# Compose key for special chars
+input * xkb_options compose:caps
+
 #
 # Basics:
 #
@@ -89,13 +105,22 @@ exec swayidle -w \
     bindsym $mod+p exec $menu
 
     # Start launcher in filebrowser mode
-    bindsym $mod+Shift+p exec rofi -show filebrowser
+    bindsym $mod+Shift+p exec rofi -show file-browser-extended
 
     # Open filebrowser gui
     bindsym $mod+Shift+t exec thunar
 
     # Lock the screen
-    bindsym $mod+m exec swaylock -C ~/.config/swaylock/config && sudo systemctl suspend
+    bindsym $mod+m exec $lock
+
+    # Screenshot a region, saving the result
+    bindsym $mod+Shift+s exec grim -g "$(slurp)" ~/screenshots/$(date +%Y-%m-%d_%H-%m-%s).png 
+
+    # Screenshot a region, copying to clipboard
+    bindsym $mod+Shift+Ctrl+s exec grim -g "$(slurp)" - | wl-copy
+
+    # Paste the current date (YYYY-MM-DD)
+    bindsym $mod+d exec ~/insert_date.sh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -108,10 +133,8 @@ exec swayidle -w \
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
-#
-#d Moving around:
-#
+    bindsym $mod+Shift+q exec swaynag -m 'exit sway?' -B 'yeah lol' 'swaymsg exit'
+
     # Move your focus around
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
@@ -133,6 +156,17 @@ exec swayidle -w \
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
+
+    ## Move workspaces between displays, similarly
+    bindsym $mod+Control+Shift+$left  move workspace to output left
+    bindsym $mod+Control+Shift+$right move workspace to output right
+    bindsym $mod+Control+Shift+$up    move workspace to output up
+    bindsym $mod+Control+Shift+$down  move workspace to output down
+    # move workspace to output with arrow keys
+    bindsym $mod+Control+Shift+Left  move workspace to output left
+    bindsym $mod+Control+Shift+Right move workspace to output right
+    bindsym $mod+Control+Shift+Up    move workspace to output up
+    bindsym $mod+Control+Shift+Down  move workspace to output down
 #
 # Workspaces:
 #
@@ -146,7 +180,7 @@ exec swayidle -w \
     bindsym $mod+7 workspace number 7
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
+    # bindsym $mod+0 workspace number 10
     # Move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace number 1
     bindsym $mod+Shift+2 move container to workspace number 2
@@ -157,9 +191,10 @@ exec swayidle -w \
     bindsym $mod+Shift+7 move container to workspace number 7
     bindsym $mod+Shift+8 move container to workspace number 8
     bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
+    # bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
+
 #
 # Layout stuff:
 #
@@ -205,16 +240,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 30px
+    bindsym $down resize grow height 30px
+    bindsym $up resize shrink height 30px
+    bindsym $right resize grow width 30px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Left resize shrink width 30px
+    bindsym Down resize grow height 30px
+    bindsym Up resize shrink height 30px
+    bindsym Right resize grow width 30px
 
     # Return to default mode
     bindsym Return mode "default"
@@ -248,10 +283,28 @@ bar {
 
     colors {
         statusline #ffffff
-        background #323232
+        background #ffffff
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
+
+## quality of life arrangements
+for_window [title="Extension: \(Bitwarden Password Manager\) - Bitwarden — Mozilla Firefox"] floating enable
+
+### Startup stuff
+# azote for managing multihead wallpapers
+exec ~/.azotebg 
+# mako for notification daemon
+exec mako
+# network manager systray applet
+exec nm-applet --indicator 
+# some wayland compatibility stuff i think? idr
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+# bluetooth systray applet
+exec blueman-applet
+# logitech mouse & keeb interface systray applet
+exec solaar --window=hide
+# kanshi for managing multiple display configs
+exec_always pkill kanshi; exec kanshi
 
 include /etc/sway/config.d/*

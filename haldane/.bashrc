@@ -1,7 +1,10 @@
 # aliases
 alias ls='ls -Fah --color=auto'
 alias obsidian='obsidian --enable-features=UseOzonePlatform --ozone-platform=wayland'
-#alias code='code --enable-features=UseOzonePlatform --ozone-platform=wayland --log debug --log debug --log debug --log debug'
+alias sshx='TERM=xterm-256color ssh'
+alias gn='sudo systemctl suspend'
+
+# functions
 
 # terminal prompt customization
 PS1='[\u@\h \w]\$ '

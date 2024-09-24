@@ -1,0 +1,28 @@
+profile orphan {
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 0,0
+}
+
+profile home {
+    output "Dell Inc. DELL S3220DGF BM1N4W2" mode 2560x1440@59.951Hz scale 0.85 position 0,0 
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 2000,1695
+}
+
+profile work {
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 0,0
+    output "Dell Inc. DELL S2721QS FN8MM43" mode 3840x2160@60.000Hz scale 1 position 2256,0
+}
+
+profile projector {
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 0,0 
+    output "SANTAK CORP. S2-TEK TV SN-000000001" mode 1920x1080@60.000Hz scale 1 position 2256,900 
+}
+
+profile projector_chen {
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 0,0 
+    output "Digital Projection Limited Titan Laser Unknown" mode 3840x2160@60.000Hz scale 1 position 2256,1504 
+}
+
+profile cgc {
+    output "Acer Technologies ED273UR Unknown" mode 2560x1440@143.996Hz scale 0.8 position 0,0
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 3200,1000
+}

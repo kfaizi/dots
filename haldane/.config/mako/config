@@ -1,7 +1,8 @@
-on-button-left=dismiss
-on-button-right=invoke-default-action
+on-button-left=exec makoctl menu -n "$id" rofi -dmenu -p 'Select action: '
 background-color=#12151d
 text-color=#abb2bf
-font=Iosevka Aile 12
-default-timeout=0
+font=Iosevka Aile 14
+width=500
+height=200
+default-timeout=6000
 

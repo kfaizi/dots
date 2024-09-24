@@ -1,0 +1,10 @@
+font=Monospace 16
+message-padding=12
+button-padding=8
+text=000000
+button-text=000000
+border=FFFFFF
+background=000000
+button-background=FFFFFF
+edge=top
+

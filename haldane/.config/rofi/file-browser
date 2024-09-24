@@ -1,0 +1,9 @@
+# recursion level (0 = unlimited)
+depth 0
+# starting directory
+dir /home/kian
+
+no-descend
+
+
+

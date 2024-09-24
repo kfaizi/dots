@@ -1,13 +1,13 @@
 {
     // "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
+    "position": "top", // Waybar position (top|bottom|left|right)
     "height": 27, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
-    "spacing": 0, // Gaps between modules (4px)
+    "spacing": 2, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "wlr/taskbar"],
     "modules-center": [],
-    "modules-right": ["idle_inhibitor", "tray", "cpu", "memory", "pulseaudio", "network", "battery", "clock"],
+    "modules-right": ["tray", "cpu", "memory", "temperature", "pulseaudio", "network", "battery", "clock"],
     // Modules configuration
     "sway/workspaces": {
         "disable-scroll": true,
@@ -19,6 +19,7 @@
 	    "3": "",
 	    "4": "",
 	    "5": "",
+	    "6": "",
         }
     },
     "keyboard-state": {
@@ -34,10 +35,9 @@
         "format": "<span style=\"italic\">{}</span>"
     },
     "wlr/taskbar": {
-	// "format": "{icon} {title:.15}",
 	"format": "{icon}",
-	// "icon-theme": "test",
 	"tooltip-format": "{title}",
+        "icon-size": 20,
 	"on-click": "minimize-raise",
 	"all-outputs": true,
 	"ignore-list": [
@@ -84,22 +84,23 @@
     "clock": {
         // "timezone": "America/Los_Angeles",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%a %d %b %H:%M}" 
+        "format": "{:%a %d %b %H:%M}",
     },
     "cpu": {
-        "format": " {usage}%",
+        "format": "CPU {usage}%",
+        // "format": " {usage}%",
         "tooltip": false
     },
     "memory": {
-        "format": " {}%"
+        "format": "RAM {}%"
+        // "format": " {}%"
     },
     "temperature": {
         // "thermal-zone": 2,
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
         "critical-threshold": 80,
-        // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{icon} {temperatureC}°C",
-        "format-icons": ["", "", ""]
+        "format-critical": "TEMP {temperatureC}°C",
+        "format": "TEMP {temperatureC}°C",
     },
     "backlight": {
         // "device": "acpi_video1",
@@ -128,36 +129,21 @@
         "format-alt": " {essid} ({signalStrength}%)"
     },
     "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        // "format": "{icon} {volume}% {format_source}",
+        "states": {
+            "muted": 0,
+            "low": 1,
+        },
+        "scroll-step": 1, // %, can be a float
         "format": "{icon} {volume}%",
 	"format-bluetooth": "{icon} {volume}% {format_source}",
         "format-bluetooth-muted": " {icon} {format_source}",
-        // "format-muted": " {format_source}",
         "format-muted": "", 
 	"format-source": " {volume}%",
         "format-source-muted": "",
         "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
+            //"headphone": "",
+            "default": ["", "", "",] 
         },
         "on-click": "pavucontrol"
     },
-    "custom/media": {
-        "format": "{icon} {}",
-        "return-type": "json",
-        "max-length": 40,
-        "format-icons": {
-            "spotify": "",
-            "default": "🎜"
-        },
-        "escape": true,
-        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
-        // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
-    }
 }
