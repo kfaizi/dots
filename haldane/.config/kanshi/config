@@ -3,8 +3,8 @@ profile orphan {
 }
 
 profile home {
-    output "Dell Inc. DELL S3220DGF BM1N4W2" mode 2560x1440@59.951Hz scale 0.85 position 0,0 
-    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 2000,1695
+    output "Dell Inc. DELL S3220DGF BM1N4W2" mode 2560x1440@59.951Hz scale 1 position 0,0 
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 1500,1440
 }
 
 profile work {
@@ -23,6 +23,11 @@ profile projector_chen {
 }
 
 profile cgc {
-    output "Acer Technologies ED273UR Unknown" mode 2560x1440@143.996Hz scale 0.8 position 0,0
-    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 3200,1000
+    output "Acer Technologies ED273UR Unknown" mode 2560x1440@143.996Hz scale 1 position 0,0
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 1500,1440
+}
+
+profile norham_tv {
+    output "Technical Concepts Ltd 43S425 Unknown" mode 3840x2160@60.000Hz scale 2 position 0,0
+    output "BOE 0x095F Unknown" mode 2256x1504@59.999Hz scale 1 position 3500,4320
 }

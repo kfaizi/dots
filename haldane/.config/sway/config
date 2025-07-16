@@ -16,7 +16,7 @@ set $up k
 set $right l
 
 # Your preferred terminal emulator
-set $term alacritty
+set $term foot
 
 # Font configuration: needs pango markup, but couldn't get it to work
 # instead, I'll just remove window title bars:
@@ -34,6 +34,12 @@ set $menu rofi -show drun
 
 ### Output configuration
 
+# source drop-in config files
+include /etc/sway/config.d/*
+
+# and do the bare minimum manually in case that fails
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
 # we set screen layout profiles with kanshi
 
 # cursor theme/size
@@ -42,22 +48,32 @@ seat seat0 xcursor_theme Adwaita 36
 # GTK theming
 set $gnome-schema org.gnome.desktop.interface
 
+# updates will be instant thanks to xdg-desktop-portal daemon
 exec_always {
-    gsettings set $gnome-schema gtk-theme 'Catppuccin-blue'
-    gsettings set $gnome-schema icon-theme 'Catppuccin-blue-xhdpi'
+    gsettings set $gnome-schema gtk-theme 'Adwaita'
+    gsettings set $gnome-schema icon-theme 'Adwaita'
     gsettings set $gnome-schema cursor-theme 'Adwaita'
     gsettings set $gnome-schema cursor-size 36
+    gsettings set $gnome-schema color-scheme 'prefer-dark'
+    gsettings set $gnome-schema font-name 'SF Pro Display 16'
 }
 
 ### Idle configuration
+
+# to lock the screen manually with a keybind defined later
 set $lock swaylock -f -C ~/.config/swaylock/config
 
+# after 300 sec / 5 min of inactivity, lock the screen.
+# after 600 sec / 10 min total, turn off the display, too.
 exec swayidle -w \
-    timeout 30 $lock \
-    timeout 150 'swaymsg "output * dpms off"' \
+    timeout 300 'swaylock -f' \
+    timeout 600 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
-    before-sleep $lock
+    before-sleep 'swaylock -f'
 
+# in addition, lock the screen when the laptop is closed.
+# this is cool, but i think it interferes with sleep?
+bindswitch --reload --locked lid:on exec $lock
 
 ### Input configuration
 focus_follows_mouse always
@@ -105,7 +121,7 @@ input * xkb_options compose:caps
     bindsym $mod+p exec $menu
 
     # Start launcher in filebrowser mode
-    bindsym $mod+Shift+p exec rofi -show file-browser-extended
+    bindsym $mod+Shift+p exec rofi -show filebrowser
 
     # Open filebrowser gui
     bindsym $mod+Shift+t exec thunar
@@ -120,7 +136,17 @@ input * xkb_options compose:caps
     bindsym $mod+Shift+Ctrl+s exec grim -g "$(slurp)" - | wl-copy
 
     # Paste the current date (YYYY-MM-DD)
-    bindsym $mod+d exec ~/insert_date.sh
+    bindsym $mod+d exec ~/scripts/insert_date.sh
+
+    # Paste the current date in long form (YYYY-MM-DD, <day of week>)
+    bindsym $mod+Shift+d exec ~/scripts/insert_date_long.sh
+
+    # Look up the currently selected word in gdict
+    bindsym $mod+Shift+Ctrl+d exec ~/scripts/define_word.sh
+
+    # Get hex value of clicked pixel, saving it to clipboard
+    bindsym $mod+Shift+e exec grim -g "$(slurp -p)" -t ppm - | magick -define ppm:format=ascii ppm:- -format '#%[hex:p{0,0}]' info: | tr -d '\n' | wl-copy
+
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -132,7 +158,7 @@ input * xkb_options compose:caps
     # Reload the configuration file
     bindsym $mod+Shift+c reload
 
-    # Exit sway (logs you out of your Wayland session)
+    # Exit sway (logs you out of your Wayland session), ungracefully
     bindsym $mod+Shift+q exec swaynag -m 'exit sway?' -B 'yeah lol' 'swaymsg exit'
 
     # Move your focus around
@@ -289,7 +315,10 @@ bar {
 }
 
 ## quality of life arrangements
+# bitwarden popup always floats
 for_window [title="Extension: \(Bitwarden Password Manager\) - Bitwarden — Mozilla Firefox"] floating enable
+# ditto for google docs zotero popup
+for_window [title="Quick Format Citation"] floating enable
 
 ### Startup stuff
 # azote for managing multihead wallpapers
@@ -298,13 +327,11 @@ exec ~/.azotebg
 exec mako
 # network manager systray applet
 exec nm-applet --indicator 
-# some wayland compatibility stuff i think? idr
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 # bluetooth systray applet
 exec blueman-applet
 # logitech mouse & keeb interface systray applet
 exec solaar --window=hide
+# bitwarden GUI for secrets
+# exec bitwarden-desktop
 # kanshi for managing multiple display configs
 exec_always pkill kanshi; exec kanshi
-
-include /etc/sway/config.d/*

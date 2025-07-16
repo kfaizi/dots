@@ -8,11 +8,12 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export GEM_HOME="$(gem env user_gemhome)"
-
-export PATH="${PATH}:~/miniconda3/bin:~/.local/share/gem/ruby/3.0.0/bin:~/.config:~/builds/google-cloud-sdk/pkg/google-cloud-sdk/opt/google-cloud-sdk/:~/.local/bin/:~/go/bin/:~/.dotnet/tools:$GEM_HOME/bin"
+export PATH="${PATH}:~/miniconda3/bin:~/.local/share/gem/ruby/3.0.0/bin:~/.config:~/.local/bin/:~/go/bin/:~/.dotnet/tools:$GEM_HOME/bin"
 
 
 export XDG_CONFIG_HOME="/home/kian/.config/"
+export XDG_CURRENT_DESKTOP=sway
+
 #export CLOUDSDK_PYTHON=$(which python3)
  
 #export WORKON_HOME=$HOME/.virtualenvs
@@ -23,10 +24,10 @@ export XDG_CONFIG_HOME="/home/kian/.config/"
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-export GTK_THEME=Catppuccin-blue
+export GTK_THEME=adwaita
 export QT_QPA_PLATFORM=wayland
 export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_STYLE_OVERRIDE=adwaita-dark
+export QT_STYLE_OVERRIDE=adwaita
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -130,8 +131,12 @@ alias jek='bundle exec jekyll serve'
 alias jek2='bundle-2.7 exec jekyll serve'
 alias dj='ssh -Y -N -L localhost:4321:localhost:4321 kian@delbruck.caltech.edu'
 alias rob='firefox "https://zoom.us/j/9934428139?from=join#success"'
-alias rmtrash='gio trash --empty'  # thunar trash ui is astonishingly slow, but this is ~instant
-
+# thunar trash ui is astonishingly slow, but this is ~instant
+alias rmtrash='gio trash --empty'
+# normally, opening webcam feed in VLC uses YUYV 4:2:2 color format, leading to stuttering. this corrects the config when launching:
+alias cam='vlc v4l2:///dev/video0 --v4l2-chroma MJPG'
+# check important dates for mari, since our first date <3
+alias mari='bash ~/scripts/anniversary.sh 2024-10-12'
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -149,9 +154,20 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 
+# todo reminder :)
+if [ -f ~/TODO.txt ]; then
+    echo
+    cowsay -f kian-kitty "$(cat ~/TODO.txt)"
+    echo
+fi
+
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 export NVM_DIR="$HOME/.config//nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+

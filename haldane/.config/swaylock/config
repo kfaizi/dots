@@ -2,7 +2,9 @@ daemonize
 ignore-empty-password
 show-failed-attempts
 indicator-caps-lock
-font=Iosevka Aile
+font=Iosevka
 indicator-radius=100
 indicator-thickness=15
-image=~/wallpapers/dead-and-dazed.png
+image=DP-1:~/Pictures/disco\ elysium/thought_cabinet.jpeg
+image=DP-4:~/Pictures/disco\ elysium/thought_cabinet.jpeg
+color=333333

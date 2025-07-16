@@ -14,6 +14,9 @@ set nocompatible
 " Turn on syntax highlighting.
 syntax on
 
+" Set the colorscheme.
+colorscheme torte
+
 " Get rid of -- INSERT -- now that lightline is installed.
 set noshowmode
 
@@ -35,6 +38,9 @@ set relativenumber
 
 " Always show the status line at the bottom, even if you only have one window open.
 set laststatus=2
+
+" Highlight current line
+set cursorline
 
 " The backspace key has slightly unintuitive behavior by default. For example,
 " by default, you can't backspace before the insertion point set with 'i'.
